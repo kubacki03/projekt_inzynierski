@@ -1,0 +1,31 @@
+.przycisk {
+    position: relative;
+    z-index: 1;
+    border-radius: 15px;
+
+}
+
+    .przycisk::before {
+        will-change: transform;
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #283593;
+        color: white;
+        z-index: -1;
+        transition: transform 300ms ease-in-out;
+        transform: scaleX(0);
+        border-radius: 15px;
+        transform-origin: right;
+
+    }
+
+    .przycisk:hover::before,
+    .przycisk:focus::before {
+        transform: scaleX(1);
+        transform-origin: left;
+        color: white;
+    }

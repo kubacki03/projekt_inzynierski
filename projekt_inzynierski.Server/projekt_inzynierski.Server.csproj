@@ -1,0 +1,67 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <SpaRoot>..\projekt_inzynierski.client</SpaRoot>
+    <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
+    <SpaProxyServerUrl>https://localhost:51339</SpaProxyServerUrl>
+    <RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
+    <EnableSdkContainerDebugging>True</EnableSdkContainerDebugging>
+    <ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:9.0</ContainerBaseImage>
+    <UserSecretsId>7a3e41f0-a621-4b6b-b80a-b5e02e687a6f</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Courses\Application\Commands\**" />
+    <Compile Remove="Courses\Application\Handlers\**" />
+    <Compile Remove="Courses\Application\Queries\**" />
+    <Content Remove="Courses\Application\Commands\**" />
+    <Content Remove="Courses\Application\Handlers\**" />
+    <Content Remove="Courses\Application\Queries\**" />
+    <EmbeddedResource Remove="Courses\Application\Commands\**" />
+    <EmbeddedResource Remove="Courses\Application\Handlers\**" />
+    <EmbeddedResource Remove="Courses\Application\Queries\**" />
+    <None Remove="Courses\Application\Commands\**" />
+    <None Remove="Courses\Application\Handlers\**" />
+    <None Remove="Courses\Application\Queries\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\projekt_inzynierski.client\projekt_inzynierski.client.esproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="itext7" Version="9.3.0" />
+    <PackageReference Include="MediatR" Version="13.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
+      <Version>9.*-*</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="OpenAI" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="AIHelper\Infrastructures\Nowy folder\" />
+    <Folder Include="CodeRunner\Domain\" />
+    <Folder Include="CodeRunner\Application\" />
+    <Folder Include="CodeRunner\Infrastructure\" />
+    <Folder Include="Images\" />
+    <Folder Include="Temp\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ContainerPort Include="8081" />
+  </ItemGroup>
+
+</Project>

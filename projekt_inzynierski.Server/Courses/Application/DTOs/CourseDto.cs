@@ -1,0 +1,12 @@
+﻿namespace projekt_inzynierski.Server.Courses.Application.DTOs
+{
+    public class CourseDto
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Language { get; set; }
+        public string? Image { get; set; }
+        public string Level { get; set; }
+    }
+}

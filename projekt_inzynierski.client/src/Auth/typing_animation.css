@@ -1,0 +1,14 @@
+#animated_typing {
+    width: 50ch;
+    font-family: monospace;
+ 
+    text-wrap: nowrap;
+    overflow: hidden;
+    animation: typing 4s steps(50) infinite alternate-reverse;
+}
+
+@keyframes typing {
+    from {
+        width: 0ch;
+    }
+}

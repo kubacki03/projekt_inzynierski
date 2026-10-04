@@ -1,0 +1,42 @@
+.text-rotate {
+    display: inline-flex; /* lub flex, jeœli wiesz co robisz */
+    flex-wrap: nowrap; /* nie pozwalamy ³amaæ linii */
+    white-space: nowrap; /* ca³y tekst w jednej linii */
+    position: relative;
+    color: white;
+    /* mo¿esz zostawiæ lub usun¹æ */
+}
+
+
+.text-rotate-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.text-rotate-word {
+    display: inline-flex; /* ju¿ dobrze */
+}
+
+.text-rotate-element {
+    display: inline-block; /* te¿ poprawnie */
+}
+
+
+.text-rotate-lines {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+
+
+.text-rotate-space {
+  white-space: pre;
+}
