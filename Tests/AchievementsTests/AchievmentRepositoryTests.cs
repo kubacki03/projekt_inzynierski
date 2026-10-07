@@ -16,6 +16,16 @@ public class AchievmentRepositoryTests
         return new AchievementsDbContext(options);
     }
 
+    private static Achievement NewAchievement(string id) => new Achievement
+    {
+        Id = id,
+        Name = "Achievement " + id,
+        Description = "Description",
+        RuleKey = "rule",
+        BadgeType = "badge",
+        SkillCategory = "category"
+    };
+
     [Fact]
     public void GetMostActiveUsersId_ReturnsTopUsers()
     {
@@ -25,9 +35,9 @@ public class AchievmentRepositoryTests
         var userId2 = Guid.NewGuid();
 
         context.UserAchievements.AddRange(
-            new UserAchievement { UserId = userId1 },
-            new UserAchievement { UserId = userId1 },
-            new UserAchievement { UserId = userId2 }
+            new UserAchievement { UserId = userId1, AchievementId = "1" },
+            new UserAchievement { UserId = userId1, AchievementId = "2" },
+            new UserAchievement { UserId = userId2, AchievementId = "1" }
         );
         context.SaveChanges();
 
@@ -48,7 +58,8 @@ public class AchievmentRepositoryTests
         // Arrange
         var context = GetDbContext();
         var userId = Guid.NewGuid();
-        context.UserAchievements.Add(new UserAchievement { UserId = userId });
+        context.Achievements.Add(NewAchievement("1"));
+        context.UserAchievements.Add(new UserAchievement { UserId = userId, AchievementId = "1" });
         context.SaveChanges();
 
         var repo = new AchievmentRepository(context);
@@ -67,7 +78,7 @@ public class AchievmentRepositoryTests
         // Arrange
         var context = GetDbContext();
         var repo = new AchievmentRepository(context);
-        var userAchievement = new UserAchievement { UserId = Guid.NewGuid() };
+        var userAchievement = new UserAchievement { UserId = Guid.NewGuid(), AchievementId = "1" };
 
         // Act
         await repo.SaveUserAchievement(userAchievement);
@@ -82,9 +93,9 @@ public class AchievmentRepositoryTests
         // Arrange
         var context = GetDbContext();
         var userId = Guid.NewGuid();
-        context.Achievements.Add(new Achievement { Id = "1", Name = "A" });
-        context.Achievements.Add(new Achievement { Id = "2", Name = "B" });
-        context.UserAchievements.Add(new UserAchievement { UserId = userId });
+        context.Achievements.Add(NewAchievement("1"));
+        context.Achievements.Add(NewAchievement("2"));
+        context.UserAchievements.Add(new UserAchievement { UserId = userId, AchievementId = "1" });
         context.SaveChanges();
 
         var repo = new AchievmentRepository(context);

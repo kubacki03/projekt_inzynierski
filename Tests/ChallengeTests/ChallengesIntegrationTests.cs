@@ -1,18 +1,13 @@
-using Xunit;
-using System.Threading.Tasks;
 using System.Net.Http.Json;
-using Microsoft.AspNetCore.Mvc.Testing;
-using projekt_inzynierski.Server;
-using projekt_inzynierski.Server.Challenges.Domain.Models;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
-using projekt_inzynierski.Server.Challenges.Application.DTOs;
+using System.Text.Json;
+using Tests.Support;
+using Xunit;
 
-public class ChallengesIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+public class ChallengesIntegrationTests : IClassFixture<ApiFactory>
 {
     private readonly HttpClient _client;
 
-    public ChallengesIntegrationTests(WebApplicationFactory<Program> factory)
+    public ChallengesIntegrationTests(ApiFactory factory)
     {
         _client = factory.CreateClient();
     }
@@ -20,25 +15,18 @@ public class ChallengesIntegrationTests : IClassFixture<WebApplicationFactory<Pr
     [Fact]
     public async Task GetUserChallenges_ReturnsChallengeList()
     {
-        // Act
-        var response = await _client.GetAsync("/api/challenges/user/user1");
+        var response = await _client.GetAsync("/UserChallenge/Get");
 
-        // Assert
         response.EnsureSuccessStatusCode();
-        var challenges = await response.Content.ReadFromJsonAsync<List<UserChallengeDto>>();
-        Xunit.Assert.NotNull(challenges);
-        Xunit.Assert.True(challenges.Count >= 0); 
+        var challenges = await response.Content.ReadFromJsonAsync<JsonElement>();
+        Xunit.Assert.Equal(JsonValueKind.Array, challenges.ValueKind);
     }
 
     [Fact]
-    public async Task AddUserChallenge_ReturnsSuccess()
+    public async Task GetUserBadges_ReturnsOk()
     {
-        // Act
-        var response = await _client.PostAsync("/api/challenges/user/user1", null);
+        var response = await _client.GetAsync("/UserChallenge/GetBadges");
 
-        // Assert
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadAsStringAsync();
-        Xunit.Assert.Contains("success", result.ToLower()); 
     }
 }

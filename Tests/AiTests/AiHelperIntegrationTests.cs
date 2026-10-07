@@ -1,15 +1,13 @@
-using Xunit;
-using System.Threading.Tasks;
 using System.Net.Http.Json;
-using Microsoft.AspNetCore.Mvc.Testing;
-using projekt_inzynierski.Server;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+using System.Text.Json;
+using Tests.Support;
+using Xunit;
 
-public class AiHelperIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+public class AiHelperIntegrationTests : IClassFixture<ApiFactory>
 {
     private readonly HttpClient _client;
 
-    public AiHelperIntegrationTests(WebApplicationFactory<Program> factory)
+    public AiHelperIntegrationTests(ApiFactory factory)
     {
         _client = factory.CreateClient();
     }
@@ -17,15 +15,11 @@ public class AiHelperIntegrationTests : IClassFixture<WebApplicationFactory<Prog
     [Fact]
     public async Task PostChatMessage_ReturnsAiResponse()
     {
-        // Arrange
-        var request = new { message = "Hello, AI!" };
+        var response = await _client.PostAsJsonAsync("/AssistantChat/GetChatResponse", new { message = "Hello, AI!" });
 
-        // Act
-        var response = await _client.PostAsJsonAsync("/api/ai/chat", request);
-
-        // Assert
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadAsStringAsync();
-        Xunit.Assert.False(string.IsNullOrEmpty(result)); 
+        var result = await response.Content.ReadFromJsonAsync<JsonElement>();
+        Xunit.Assert.True(result.GetProperty("success").GetBoolean());
+        Xunit.Assert.Equal("stubbed AI answer", result.GetProperty("message").GetString());
     }
 }

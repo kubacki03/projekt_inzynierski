@@ -1,25 +1,21 @@
 using System.Net.Http.Json;
-using System.Threading.Tasks;
-using Xunit;
-using projekt_inzynierski.Server;
-using Microsoft.AspNetCore.Mvc.Testing;
-using projekt_inzynierski.Server.Users.Application.Commands;
+using System.Text.Json;
 using projekt_inzynierski.Server.Users.Application.DTOs;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+using Tests.Support;
+using Xunit;
 
-public class UsersIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+public class UsersIntegrationTests : IClassFixture<ApiFactory>
 {
     private readonly HttpClient _client;
 
-    public UsersIntegrationTests(WebApplicationFactory<Program> factory)
+    public UsersIntegrationTests(ApiFactory factory)
     {
         _client = factory.CreateClient();
     }
 
     [Fact]
-    public async Task RegisterUser_ReturnsPublicId()
+    public async Task RegisterUser_LogsInAndReturnsRole()
     {
-        // Arrange
         var registerDto = new UserRegisterDto
         {
             email = "testuser@example.com",
@@ -27,19 +23,16 @@ public class UsersIntegrationTests : IClassFixture<WebApplicationFactory<Program
             firstName = "Jan",
             nickname = "janek",
             birthDate = new DateTime(2000, 1, 1),
-            educationLevel = "Wy¿sze",
-            experience = "Œrednie",
+            educationLevel = "Higher",
+            experience = "Intermediate",
             gender = "M"
         };
 
-        var command = new RegisterUserCommand(registerDto);
+        var response = await _client.PostAsJsonAsync("/User/Register", registerDto);
 
-        // Act
-        var response = await _client.PostAsJsonAsync("/api/users/register", command);
-
-        // Assert
         response.EnsureSuccessStatusCode();
-        var publicId = await response.Content.ReadFromJsonAsync<Guid>();
-        Xunit.Assert.NotEqual(Guid.Empty, publicId);
+        var result = await response.Content.ReadFromJsonAsync<JsonElement>();
+        Xunit.Assert.Equal("user", result.GetProperty("role").GetString());
+        Xunit.Assert.Contains(response.Headers, h => h.Key == "Set-Cookie");
     }
 }

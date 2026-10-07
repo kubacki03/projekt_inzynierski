@@ -1,17 +1,13 @@
-using Xunit;
-using System.Threading.Tasks;
 using System.Net.Http.Json;
-using Microsoft.AspNetCore.Mvc.Testing;
-using projekt_inzynierski.Server;
-using projekt_inzynierski.Server.Courses.Domain.Models;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+using System.Text.Json;
+using Tests.Support;
+using Xunit;
 
-public class CoursesIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+public class CoursesIntegrationTests : IClassFixture<ApiFactory>
 {
     private readonly HttpClient _client;
 
-    public CoursesIntegrationTests(WebApplicationFactory<Program> factory)
+    public CoursesIntegrationTests(ApiFactory factory)
     {
         _client = factory.CreateClient();
     }
@@ -19,31 +15,18 @@ public class CoursesIntegrationTests : IClassFixture<WebApplicationFactory<Progr
     [Fact]
     public async Task GetCourses_ReturnsCoursesList()
     {
-        // Act
-        var response = await _client.GetAsync("/api/courses");
+        var response = await _client.GetAsync("/FeaturedCourses/Get");
 
-        // Assert
         response.EnsureSuccessStatusCode();
-        var courses = await response.Content.ReadFromJsonAsync<List<Course>>();
-        Xunit.Assert.NotNull(courses);
-        Xunit.Assert.True(courses.Count >= 0); 
+        var courses = await response.Content.ReadFromJsonAsync<JsonElement>();
+        Xunit.Assert.Equal(JsonValueKind.Array, courses.ValueKind);
     }
 
     [Fact]
-    public async Task GetCourseById_ReturnsCourseOrNotFound()
+    public async Task GetPagedCourses_ReturnsOk()
     {
-        // Act
-        var response = await _client.GetAsync("/api/courses/1");
+        var response = await _client.GetAsync("/FeaturedCourses/paged?pageNumber=1&pageSize=5");
 
-        // Assert
-        if (response.IsSuccessStatusCode)
-        {
-            var course = await response.Content.ReadFromJsonAsync<Course>();
-            Xunit.Assert.NotNull(course);
-        }
-        else
-        {
-            Xunit.Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
-        }
+        response.EnsureSuccessStatusCode();
     }
 }

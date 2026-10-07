@@ -1,18 +1,13 @@
-using Xunit;
-using System.Threading.Tasks;
 using System.Net.Http.Json;
+using System.Text.Json;
+using Tests.Support;
+using Xunit;
 
-using projekt_inzynierski.Server;
-using projekt_inzynierski.Server.Achievments.Domain.Models;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
-using Microsoft.AspNetCore.Mvc.Testing;
-
-public class AchievementsIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+public class AchievementsIntegrationTests : IClassFixture<ApiFactory>
 {
     private readonly HttpClient _client;
 
-    public AchievementsIntegrationTests(WebApplicationFactory<Program> factory)
+    public AchievementsIntegrationTests(ApiFactory factory)
     {
         _client = factory.CreateClient();
     }
@@ -20,27 +15,21 @@ public class AchievementsIntegrationTests : IClassFixture<WebApplicationFactory<
     [Fact]
     public async Task GetUserAchievements_ReturnsAchievementsList()
     {
-        // Act
-        var response = await _client.GetAsync("/api/achievements/user/user1");
+        var response = await _client.GetAsync("/UserAchievment/GetUserAchievments");
 
-        // Assert
         response.EnsureSuccessStatusCode();
-        var achievements = await response.Content.ReadFromJsonAsync<List<UserAchievement>>();
-        Xunit.Assert.NotNull(achievements);
-        Xunit.Assert.True(achievements.Count >= 0);
+        var achievements = await response.Content.ReadFromJsonAsync<JsonElement>();
+        Xunit.Assert.Equal(JsonValueKind.Array, achievements.ValueKind);
     }
 
     [Fact]
     public async Task GetMostActiveUsers_ReturnsUserIds()
     {
-        // Act
-        var response = await _client.GetAsync("/api/achievements/most-active");
+        var response = await _client.GetAsync("/UserAchievment/GetMostActiveUsers");
 
-        // Assert
         response.EnsureSuccessStatusCode();
-        var userIds = await response.Content.ReadFromJsonAsync<List<string>>();
-        Xunit.Assert.NotNull(userIds);
-        Xunit.Assert.True(userIds.Count <= 5);
+        var nicknames = await response.Content.ReadFromJsonAsync<List<string>>();
+        Xunit.Assert.NotNull(nicknames);
+        Xunit.Assert.True(nicknames.Count <= 5);
     }
 }
-

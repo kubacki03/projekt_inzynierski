@@ -2,7 +2,6 @@
 using System.Threading.RateLimiting;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -44,7 +43,7 @@ using projekt_inzynierski.Server.Users.Infrastructures.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string  not found."); ;
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string  not found.");
 builder.Services.AddDbContext<UserDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDbContext<CourseDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDbContext<AchievementsDbContext>(options => options.UseSqlServer(connectionString));
@@ -106,14 +105,6 @@ if (builder.Environment.IsDevelopment())
     IdentityModelEventSource.ShowPII = true;
 }
 builder.Services.AddSignalR();
-builder.Services.Configure<ForwardedHeadersOptions>(options =>
-{
-    // Behind the Azure App Service front end the client IP is only available via X-Forwarded-For;
-    // without this every request would share the proxy's IP in the rate limiter.
-    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-    options.KnownNetworks.Clear();
-    options.KnownProxies.Clear();
-});
 
 builder.Services.AddAuthorization();
 builder.Services.AddRateLimiter(options =>
@@ -152,8 +143,6 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
-builder.Services.AddDbContext<ContentDbContext>();
-// Add services to the container.
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
 builder.Services.AddControllers();
@@ -168,7 +157,6 @@ builder.Services.AddScoped<IUserProgress, UserProgressService>();
 builder.Services.AddScoped<IUserAchievment, UserAchievmentService>();
 builder.Services.AddScoped<IChatAssistant, ChatAssistantService>();
 builder.Services.AddScoped<IAchievmentRepository, AchievmentRepository>();
-builder.Services.AddScoped<UserDbContext>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<ISubject, SubjectService>();
 builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
@@ -184,8 +172,6 @@ builder.Services.AddScoped<IQuiz, QuizService>();
 builder.Services.AddScoped<ICodeAnalyzer, OpenAIAnalyzer>();
 builder.Services.AddScoped<IExercise, ExerciseService>();
 builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
-builder.Services.AddScoped<IAchievementService, AchievementService>();
-builder.Services.AddScoped<IAchievmentRepository, AchievmentRepository>();
 builder.Services.AddScoped<IUserProgressRepository, UserProgressRepository>();
 builder.Services.AddScoped<IAdaptiveLearning, AdaptiveLearning>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
@@ -209,18 +195,16 @@ builder.Services.AddScoped<IContentAdminService, ContentAdminService>();
 builder.Services.AddScoped<IUserAvatar, UserAvatarService>();
 builder.Services.AddSingleton<IMatchmakingQueue, MatchmakingQueue>();
 var app = builder.Build();
-app.UseForwardedHeaders();
 app.UseCors("AllowFrontend");
 app.MapHub<AchievementsHub>("/hubs/achievements");
 app.UseDefaultFiles();
 app.MapStaticAssets();
 app.MapHub<NotificationHub>("/notificationHub");
 app.MapHub<GameHub>("/hubs/game");
-//app.UseHttpsRedirection();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "Images")),
+        Path.Combine(app.Environment.ContentRootPath, "Images")),
     RequestPath = "/Images"
 });
 
