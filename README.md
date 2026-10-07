@@ -1,18 +1,31 @@
-# CodeOdyssey – projekt inżynierski
+# CodeOdyssey
 
-Platforma e-learningowa do nauki programowania (m.in. C#) z elementami grywalizacji i wsparciem AI. Składa się z backendu ASP.NET Core (.NET 9) oraz frontendu React + TypeScript (Vite).
+Platforma e-learningowa do nauki programowania (m.in. C#) z grywalizacją i wsparciem AI. Projekt inżynierski: backend w ASP.NET Core (.NET 9) i frontend w React + TypeScript.
 
-## Funkcje
+## Demo
 
-- **Kursy i lekcje** – teoria, quizy i ćwiczenia praktyczne, śledzenie postępów
-- **Edytor kodu i uruchamianie kodu** – Monaco Editor + `CodeRunner`
-- **Asystent AI** (OpenAI) – czat, analiza i code review rozwiązań, generowanie treści, adaptacyjna nauka
-- **Osiągnięcia i odznaki** – system reguł (serie nauki, liczba lekcji/zadań, wyniki quizów…), powiadomienia w czasie rzeczywistym (SignalR)
-- **Wyzwania** – w tym wyzwania tygodniowe
-- **PVP** – pojedynki graczy z kolejką matchmakingu (SignalR, `/hubs/game`)
-- **Sklep premium**
-- **Panel administratora** – zarządzanie użytkownikami i materiałami kursów
-- **Uwierzytelnianie** – JWT, rejestracja wieloetapowa
+[![Demo aplikacji CodeOdyssey](https://img.youtube.com/vi/oWyKugnDe1Q/maxresdefault.jpg)](https://www.youtube.com/watch?v=oWyKugnDe1Q)
+
+Pełne demo aplikacji: [obejrzyj na YouTube](https://www.youtube.com/watch?v=oWyKugnDe1Q). Projekt działa lokalnie, nie ma wersji online.
+
+## Najważniejsze funkcje
+
+- **Kursy i lekcje**: teoria, quizy i ćwiczenia praktyczne, śledzenie postępów
+- **Edytor kodu i uruchamianie kodu**: Monaco Editor + `CodeRunner`
+- **Asystent AI** (OpenAI): czat, code review rozwiązań, generowanie treści, adaptacyjna nauka
+- **Osiągnięcia i odznaki**: system reguł (serie nauki, liczba lekcji i zadań, wyniki quizów), powiadomienia w czasie rzeczywistym (SignalR)
+- **Wyzwania**, w tym tygodniowe
+- **PVP**: pojedynki graczy z kolejką matchmakingu (SignalR)
+- **Sklep premium** i **panel administratora**
+- **Uwierzytelnianie**: JWT w ciasteczku HttpOnly, rejestracja wieloetapowa
+
+## Co warto zobaczyć w kodzie
+
+- **MediatR**: logowanie i rejestracja jako komendy (`Users/Application/Commands` + `Handlers`), kontroler wysyła je bezpośrednio przez `IMediator`.
+- **Zdarzenia domenowe**: `LessonEvaluatedEvent` uruchamia sugestię kursu powtórzeniowego, a `AchievementUnlockedEvent` wysyła powiadomienie przez SignalR. Każde ma własny `INotificationHandler`.
+- **Układ modułowy**: każdy moduł ma warstwy `Api` / `Application` / `Domain` / `Infrastructures`.
+- **Bezpieczeństwo logowania**: hashowanie z rehashowaniem, wyrównany czas odpowiedzi dla nieznanego e-maila, rate limiting na endpointach `auth`.
+- **Testy**: xUnit (jednostkowe i integracyjne), projekt `Tests/`.
 
 ## Technologie
 

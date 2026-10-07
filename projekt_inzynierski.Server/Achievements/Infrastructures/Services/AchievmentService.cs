@@ -1,10 +1,11 @@
-﻿using projekt_inzynierski.Server.Achievments.Application.Events;
+using projekt_inzynierski.Server.Achievments.Application.Events;
 using projekt_inzynierski.Server.Achievments.Application.Interfaces;
 using projekt_inzynierski.Server.Achievments.Application.Rules;
 using projekt_inzynierski.Server.Achievments.Domain.Models;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using System;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace projekt_inzynierski.Server.Achievments.Infrastructures.Services
@@ -13,13 +14,13 @@ namespace projekt_inzynierski.Server.Achievments.Infrastructures.Services
     {
         private readonly AchievementsDbContext _db;
         private readonly IEnumerable<IAchievementRule> _rules;
-        private readonly IEventBus _bus;
+        private readonly IPublisher _publisher;
 
         private static readonly JsonSerializerOptions JsonOpts = new() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
 
-        public AchievementService(AchievementsDbContext db, IEnumerable<IAchievementRule> rules, IEventBus bus)
+        public AchievementService(AchievementsDbContext db, IEnumerable<IAchievementRule> rules, IPublisher publisher)
         {
-            _db = db; _rules = rules; _bus = bus;
+            _db = db; _rules = rules; _publisher = publisher;
         }
 
         public async Task HandleEventAsync(DomainEvent evt, CancellationToken ct = default)
@@ -72,7 +73,7 @@ namespace projekt_inzynierski.Server.Achievments.Infrastructures.Services
                 _db.UserAchievements.Add(earned);
                 await _db.SaveChangesAsync(ct);
 
-                await _bus.PublishAsync(new AchievementUnlockedEvent(evt.UserId, a.Id, earned.EarnedAtUtc), ct);
+                await _publisher.Publish(new AchievementUnlockedEvent(evt.UserId, a.Id, earned.EarnedAtUtc), ct);
             }
         }
     }

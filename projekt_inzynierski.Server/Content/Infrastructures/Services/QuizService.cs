@@ -4,7 +4,6 @@ using projekt_inzynierski.Server.Achievments.Application.Interfaces;
 using projekt_inzynierski.Server.Achievments.Application.Repositories;
 using projekt_inzynierski.Server.Achievments.Domain.Models;
 using projekt_inzynierski.Server.Content.Application.Interfaces;
-using projekt_inzynierski.Server.Content.Domain.Events;
 using projekt_inzynierski.Server.Content.Domain.Models;
 using projekt_inzynierski.Server.Content.Domain.Repositories;
 using projekt_inzynierski.Server.Content.Infrastructures.Persistance;

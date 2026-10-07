@@ -35,8 +35,7 @@ namespace projekt_inzynierski.Server.Courses.Infrastructures.Services
 
             };
 
-            await _courseRepository.CreateNewCourse(course);
-            await _courseRepository.CreateUserCourse(userId, course);
+            await _courseRepository.CreateNewCourseForUser(userId, course);
             return course;
 
         }
@@ -55,8 +54,7 @@ namespace projekt_inzynierski.Server.Courses.Infrastructures.Services
                 ,
                 ImageURL = "https://d1ub0o53i85pdh.cloudfront.net/uploads/2021/07/Facebook-Linkedin-image-template-3.jpg"
             };
-            await _courseRepository.CreateNewCourse(course);
-            await _courseRepository.CreateUserCourse(userId, course);
+            await _courseRepository.CreateNewCourseForUser(userId, course);
             return course;
 
         }

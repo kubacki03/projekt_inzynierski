@@ -2,8 +2,9 @@ using projekt_inzynierski.Server.Users.Domain.Models;
 
 namespace projekt_inzynierski.Server.Users.Application.Interfaces
 {
-    public interface IAuthService
+    public interface ITokenService
     {
-        Task<User> GetUserByPublicIdAsync(string publicId);
+        string CreateUserToken(User user);
+        string CreateAdminToken(int adminId);
     }
 }

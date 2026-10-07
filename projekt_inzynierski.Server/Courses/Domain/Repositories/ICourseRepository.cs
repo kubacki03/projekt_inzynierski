@@ -10,7 +10,7 @@ namespace projekt_inzynierski.Server.Courses.Domain.Repositories
         Task<Course> GetCourseByIdAsync(int id);
         Task<int> CreateNewCourse(Course c);
         List<Course> GetAllByIdFromList(List<int> listId);
-        Task CreateUserCourse(string userId, Course c);
+        Task<int> CreateNewCourseForUser(string userId, Course c);
         Task<PagedResult<CourseDto>> GetPagedCourses(int pageNumber, int pageSize); 
         Task<PagedResult<CourseDto>> GetPagedCoursesByLanguage(string language, int pageNumber, int pageSize); 
         Task<PagedResult<CourseDto>> GetPagedCoursesByTitle(string title, int pageNumber, int pageSize);

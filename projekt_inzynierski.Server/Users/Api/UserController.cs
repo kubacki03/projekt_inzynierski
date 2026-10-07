@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using projekt_inzynierski.Server.PremiumStore.Application.Repositories;
+using projekt_inzynierski.Server.Users.Application.Commands;
 using projekt_inzynierski.Server.Users.Application.DTOs;
 using projekt_inzynierski.Server.Users.Application.Interfaces;
 using projekt_inzynierski.Server.Users.Infrastructures.Services;
@@ -13,12 +15,14 @@ namespace projekt_inzynierski.Server.Users.Api
     [Route("[controller]")]
     public class UserController : Controller
     {
+        private readonly IMediator _mediator;
         private readonly IAuthService _userService;
         private readonly IUserProgress _progressService;
         private readonly IRewardRepository _rewardService;
-        public UserController(IAuthService userService, IUserProgress userProgress, IRewardRepository rewardService)
+        public UserController(IMediator mediator, IAuthService userService, IUserProgress userProgress, IRewardRepository rewardService)
         {
-            this._userService = userService;
+            _mediator = mediator;
+            _userService = userService;
             _progressService = userProgress;
             _rewardService = rewardService;
         }
@@ -29,7 +33,7 @@ namespace projekt_inzynierski.Server.Users.Api
         {
             try
             {
-                await _userService.RegisterAsync(request);
+                await _mediator.Send(new RegisterUserCommand(request));
             }
             catch (DbUpdateException)
             {
@@ -54,7 +58,7 @@ namespace projekt_inzynierski.Server.Users.Api
             {
                 try
                 {
-                    token = await _userService.LoginAdmin(request.email, request.password);
+                    token = await _mediator.Send(new LoginAdminCommand(request.email, request.password));
                     role = "admin"; 
                 }
                 catch (UnauthorizedAccessException)
@@ -66,7 +70,7 @@ namespace projekt_inzynierski.Server.Users.Api
             {
                 try
                 {
-                    token = await _userService.LoginAsync(request.email, request.password);
+                    token = await _mediator.Send(new LoginUserCommand(request.email, request.password));
                 }
                 catch (UnauthorizedAccessException ex)
                 {

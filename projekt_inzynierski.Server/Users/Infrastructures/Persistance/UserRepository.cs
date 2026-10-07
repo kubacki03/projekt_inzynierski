@@ -193,7 +193,7 @@ namespace projekt_inzynierski.Server.Users.Infrastructures.Persistance
             }
             else
             {
-                user.AccountPremiumDateEnd.AddDays(days);
+                user.AccountPremiumDateEnd = user.AccountPremiumDateEnd.AddDays(days);
             }
 
           await  _context.SaveChangesAsync();

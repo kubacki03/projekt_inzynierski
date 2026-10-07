@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
+using MediatR;
 using projekt_inzynierski.Server.Users.Application.Commands;
 using projekt_inzynierski.Server.Users.Application.Interfaces;
 using projekt_inzynierski.Server.Users.Domain.Models;
@@ -11,13 +10,13 @@ namespace projekt_inzynierski.Server.Users.Application.Handlers
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
-        private readonly IAuthService _authService;
+        private readonly ITokenService _tokenService;
 
-        public LoginUserHandler(IUserRepository userRepository, IPasswordHasher passwordHasher, IAuthService authService)
+        public LoginUserHandler(IUserRepository userRepository, IPasswordHasher passwordHasher, ITokenService tokenService)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
-            _authService = authService;
+            _tokenService = tokenService;
         }
 
         private const string InvalidCredentials = "Nieprawidłowy e-mail lub hasło";
@@ -47,7 +46,7 @@ namespace projekt_inzynierski.Server.Users.Application.Handlers
                 throw new UnauthorizedAccessException("Konto zostało zablokowane");
             }
 
-            return await _authService.GenerateJWT(user);
+            return _tokenService.CreateUserToken(user);
         }
     }
 

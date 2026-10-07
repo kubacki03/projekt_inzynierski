@@ -1,13 +1,6 @@
-﻿using MediatR;
+using MediatR;
 
-public class LoginUserCommand : IRequest<string>
+namespace projekt_inzynierski.Server.Users.Application.Commands
 {
-    public string Email { get; }
-    public string Password { get; }
-
-    public LoginUserCommand(string email, string password)
-    {
-        Email = email;
-        Password = password;
-    }
+    public record LoginUserCommand(string Email, string Password) : IRequest<string>;
 }

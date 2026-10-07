@@ -39,13 +39,12 @@ namespace projekt_inzynierski.Server.Courses.Infrastructures.Persistance
             return c.Id;
 
         }
-
-        public async Task CreateUserCourse(string userId, Course c)
+        public async Task<int> CreateNewCourseForUser(string userId, Course c)
         {
             UserCourse userCourse = new UserCourse { Course = c, UserId = userId };
             await _context.UserCourses.AddAsync(userCourse);
             await _context.SaveChangesAsync();
-
+            return c.Id;
         }
 
 

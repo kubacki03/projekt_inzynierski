@@ -1,6 +1,8 @@
-﻿namespace projekt_inzynierski.Server.Achievments.Application.Events
+using MediatR;
+
+namespace projekt_inzynierski.Server.Achievments.Application.Events
 {
-    public record AchievementUnlockedEvent : DomainEvent
+    public record AchievementUnlockedEvent : DomainEvent, INotification
     {
         public AchievementUnlockedEvent(Guid userId, string achievementId, DateTime earnedAtUtc)
         {
