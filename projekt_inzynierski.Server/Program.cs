@@ -194,6 +194,8 @@ builder.Services.AddScoped<IContentAdminRepository, ContentAdminRepository>();
 builder.Services.AddScoped<IContentAdminService, ContentAdminService>();
 builder.Services.AddScoped<IUserAvatar, UserAvatarService>();
 builder.Services.AddSingleton<IMatchmakingQueue, MatchmakingQueue>();
+builder.Services.AddSingleton<IPvpQuestionBank, PvpQuestionBank>();
+builder.Services.AddSingleton<IPvpMatchManager, PvpMatchManager>();
 var app = builder.Build();
 app.UseCors("AllowFrontend");
 app.MapHub<AchievementsHub>("/hubs/achievements");
